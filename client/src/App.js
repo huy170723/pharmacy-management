@@ -1,11 +1,18 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 // CONTEXT
 import { CartProvider } from "./contexts/CartContext";
 
 // LAYOUT
 import ClientLayout from "./layouts/ClientLayout";
+import AdminLayout from "./pages/admin/AdminLayout";
+
+// PROTECTED ROUTE (Tạm thời không dùng để test giao diện)
+// import ProtectedRoute from "./components/ProtectedRoute";
+
+// COMPONENT AI CHATBOX
+import AIChatbox from "./components/AIChatbox";
 
 // CLIENT PAGES
 import HomePage from "./pages/HomePage";
@@ -22,16 +29,16 @@ import CartPage from "./pages/CartPage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
-// ADMIN
-import AdminLayout from "./pages/admin/AdminLayout";
+// ADMIN PAGES
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ProductManager from "./pages/admin/ProductManager";
+import OrderManager from "./pages/admin/OrderManager";
 
 function App() {
   return (
     <Router>
-      {/* ✅ BỌC CART PROVIDER Ở ĐÂY */}
       <CartProvider>
         <Routes>
-
           {/* ===== AUTH (KHÔNG HEADER / FOOTER) ===== */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -49,10 +56,22 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
           </Route>
 
-          {/* ===== ADMIN ===== */}
-          <Route path="/admin/*" element={<AdminLayout />} />
+          {/* ===== ADMIN (ĐÃ BỎ PROTECTED ROUTE ĐỂ TEST) ===== */}
+          {/* Sửa lại: Gỡ bỏ ProtectedRoute và chỉnh path cha là /admin */}
+          <Route path="/admin" element={<AdminLayout />}>
+            {/* Index Route: Khi vào /admin sẽ tự nhảy sang /admin/dashboard */}
+            <Route index element={<Navigate to="dashboard" replace />} />
+
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="products" element={<ProductManager />} />
+            <Route path="orders" element={<OrderManager />} />
+          </Route>
 
         </Routes>
+
+        {/* ✅ CHÈN CHATBOX AI HIỆN TRÊN TOÀN BỘ WEBSITE */}
+        <AIChatbox />
+
       </CartProvider>
     </Router>
   );

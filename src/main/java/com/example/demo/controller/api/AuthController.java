@@ -1,7 +1,10 @@
 package com.example.demo.controller.api;
 
+import com.example.demo.dto.LoginRequest;
 import com.example.demo.entity.User;
+import com.example.demo.service.AdminService;
 import com.example.demo.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -12,43 +15,41 @@ import java.util.Map;
 public class AuthController {
 
     private final UserService userService;
+    private final AdminService adminService;
 
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, AdminService adminService) {
         this.userService = userService;
+        this.adminService = adminService;
     }
 
-    // ===== REGISTER =====
-    @PostMapping("/register")
-    public Map<String, Object> register(@RequestBody Map<String, String> body) {
-
-        User user = userService.register(
-                body.get("name"),
-                body.get("email"),
-                body.get("password"));
-
-        return Map.of(
-                "success", true,
-                "message", "Đăng ký thành công",
-                "userId", user.getId(),
-                "email", user.getEmail(),
-                "name", user.getName());
-    }
-
-    // ===== LOGIN =====
-    // ===== LOGIN =====
+    // ================= USER LOGIN (GIỮ NGUYÊN) =================
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest body) {
 
         User user = userService.login(
-                body.get("email"),
-                body.get("password"));
+                body.getEmail(),
+                body.getPassword());
 
-        // Thay "userId" thành "id" để khớp với React (user.id)
-        return Map.of(
+        return ResponseEntity.ok(Map.of(
                 "success", true,
-                "message", "Đăng nhập thành công",
                 "id", user.getId(),
+                "name", user.getName(),
                 "email", user.getEmail(),
-                "name", user.getName());
+                "role", user.getRole()));
+    }
+
+    // ================= ADMIN LOGIN (CHỈ DÙNG MÃ 6 SỐ) =================
+    @PostMapping("/admin/login")
+    public ResponseEntity<?> adminLogin(@RequestBody Map<String, String> body) {
+
+        String code = body.get("code");
+
+        User admin = adminService.loginAdminByCode(code);
+
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "id", admin.getId(),
+                "name", admin.getName(),
+                "role", admin.getRole()));
     }
 }

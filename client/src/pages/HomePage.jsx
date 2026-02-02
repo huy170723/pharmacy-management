@@ -7,20 +7,8 @@ const HomePage = () => {
     const [saleProducts, setSaleProducts] = useState([]);
     const [currentSubBanner, setCurrentSubBanner] = useState(0);
 
-    const subBannerImages = [
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/1920x0/filters:quality(90):format(webp)/Banner_H1_Web_PC_1610x492_805x246_969a492928.jpg",
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/1920x0/filters:quality(90):format(webp)/Banner_H1_Web_PC_1610x492_805x246_d7a013df35.jpg",
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/1920x0/filters:quality(90):format(webp)/D_H1_Desktop_1200x367_f6daf1d18a.png",
-        "https://cdn.nhathuoclongchau.com.vn/unsafe/1920x0/filters:quality(90):format(webp)/D_H1_Desktop_1200x367_9deee4e798.png"
-    ];
-
-    const blogPosts = [
-        { id: 1, tag: 'Truyền thông', title: 'Pharmacy phối hợp STADA Pymepharco lan toả kiến thức y khoa về phòng tránh thừa cân, béo phì và giảm cân an toàn', img: 'https://cdn.nhathuoclongchau.com.vn/unsafe/835x470/filters:format(webp)/PAP_05829_e4106ae0fc.jpg' },
-        { id: 2, tag: 'Truyền thông', title: 'Pharmacy đóng góp sáng kiến về y tế số tại Diễn đàn Kinh tế Thụy Sĩ – Việt Nam 2025', img: 'https://cdn.nhathuoclongchau.com.vn/unsafe/228x129/filters:format(webp)/img9763_1762309914009601793386_1762310125225_17623101258241322932016_e90feeffd6.jpg' },
-        { id: 3, tag: 'Truyền thông', title: 'Pharmacy cùng Abbott – tập đoàn chăm sóc sức khỏe thế giới triển khai hợp tác chiến lược', img: 'https://cdn.nhathuoclongchau.com.vn/unsafe/228x129/filters:format(webp)/photo_2025_11_05_13_47_30_2_c90020df61.jpg' },
-        { id: 4, tag: 'Truyền thông', title: 'Thương gửi "khúc ruột" miền Trung, Long Châu điều động 4 tấn thuốc hỗ trợ vùng lũ', img: 'https://cdn.nhathuoclongchau.com.vn/unsafe/228x129/filters:format(webp)/PAP_06210_bf4900b4cc.jpg' }
-    ];
-
+    // GIỮ NGUYÊN GIAO DIỆN CŨ: Mảng danh mục với ảnh và tên của bạn
+    // Lưu ý: Các giá trị 'slug' phải khớp chính xác với dữ liệu trong cột 'slug' ở MySQL
     const categories = [
         { id: 1, name: 'Thần kinh não', slug: 'than-kinh-nao', img: 'https://cdn.nhathuoclongchau.com.vn/unsafe/96x0/filters:quality(90):format(webp)/smalls/Than_kinh_nao_ae09cbf6e8.png' },
         { id: 2, name: 'Vitamin & Khoáng chất', slug: 'vitamin-khoang-chat', img: 'https://cdn.nhathuoclongchau.com.vn/unsafe/96x0/filters:quality(90):format(webp)/smalls/Vitamin_and_Khoang_chat_a92b3b1672.png' },
@@ -36,6 +24,20 @@ const HomePage = () => {
         { id: 12, name: 'Hỗ trợ tình dục', slug: 'ho-tro-tinh-duc', img: 'https://cdn.nhathuoclongchau.com.vn/unsafe/96x0/filters:quality(90):format(webp)/smalls/Ho_tro_tinh_duc_2497bbf972.png' }
     ];
 
+    const subBannerImages = [
+        "https://cdn.nhathuoclongchau.com.vn/unsafe/1920x0/filters:quality(90):format(webp)/Banner_H1_Web_PC_1610x492_805x246_969a492928.jpg",
+        "https://cdn.nhathuoclongchau.com.vn/unsafe/1920x0/filters:quality(90):format(webp)/Banner_H1_Web_PC_1610x492_805x246_d7a013df35.jpg",
+        "https://cdn.nhathuoclongchau.com.vn/unsafe/1920x0/filters:quality(90):format(webp)/D_H1_Desktop_1200x367_f6daf1d18a.png",
+        "https://cdn.nhathuoclongchau.com.vn/unsafe/1920x0/filters:quality(90):format(webp)/D_H1_Desktop_1200x367_9deee4e798.png"
+    ];
+
+    const blogPosts = [
+        { id: 1, tag: 'Truyền thông', title: 'Pharmacy phối hợp STADA Pymepharco lan toả kiến thức y khoa về phòng tránh thừa cân, béo phì và giảm cân an toàn', img: 'https://cdn.nhathuoclongchau.com.vn/unsafe/835x470/filters:format(webp)/PAP_05829_e4106ae0fc.jpg' },
+        { id: 2, tag: 'Truyền thông', title: 'Pharmacy đóng góp sáng kiến về y tế số tại Diễn đàn Kinh tế Thụy Sĩ – Việt Nam 2025', img: 'https://cdn.nhathuoclongchau.com.vn/unsafe/228x129/filters:format(webp)/img9763_1762309914009601793386_1762310125225_17623101258241322932016_e90feeffd6.jpg' },
+        { id: 3, tag: 'Truyền thông', title: 'Pharmacy cùng Abbott – tập đoàn chăm sóc sức khỏe thế giới triển khai hợp tác chiến lược', img: 'https://cdn.nhathuoclongchau.com.vn/unsafe/228x129/filters:format(webp)/photo_2025_11_05_13_47_30_2_c90020df61.jpg' },
+        { id: 4, tag: 'Truyền thông', title: 'Thương gửi "khúc ruột" miền Trung, Long Châu điều động 4 tấn thuốc hỗ trợ vùng lũ', img: 'https://cdn.nhathuoclongchau.com.vn/unsafe/228x129/filters:format(webp)/PAP_06210_bf4900b4cc.jpg' }
+    ];
+
     const healthChecks = [
         { title: 'Tính chỉ số BMI', path: '/bmi', icon: '⚖️', desc: 'Biết được tình trạng cân nặng của bạn thông qua chỉ số khối cơ thể.' },
         { title: 'Tra cứu Huyết áp', path: '/blood-pressure', icon: '❤️', desc: 'Đánh giá chỉ số huyết áp tâm thu và tâm trương của bạn.' },
@@ -45,11 +47,11 @@ const HomePage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // 1. SẢN PHẨM BÁN CHẠY
+                // 1. SẢN PHẨM BÁN CHẠY (Sử dụng URL API của Huy)
                 const prodRes = await axios.get('http://localhost:8080/api/products');
                 setProducts(prodRes.data || []);
 
-                // 2. FLASH SALE (giữ nguyên như cũ)
+                // 2. FLASH SALE
                 const saleRes = await axios.get('http://localhost:8080/api/sale_products');
                 const saleList = saleRes.data?._embedded?.saleProducts || [];
                 setSaleProducts(saleList);
@@ -60,7 +62,6 @@ const HomePage = () => {
         };
         fetchData();
     }, []);
-
 
     const handleNext = () => setCurrentSubBanner((prev) => (prev === subBannerImages.length - 1 ? 0 : prev + 1));
     const handlePrev = () => setCurrentSubBanner((prev) => (prev === 0 ? subBannerImages.length - 1 : prev - 1));
@@ -83,7 +84,6 @@ const HomePage = () => {
                     <h2 style={styles.saleTitle}>⚡ FLASH SALE HÔM NAY</h2>
                     <div style={styles.productGrid}>
                         {saleProducts.length > 0 ? saleProducts.map(p => {
-                            // Tách ID từ self link để tránh lỗi undefined
                             const productId = p._links.self.href.split('/').pop();
                             return (
                                 <Link key={productId} to={`/product/${productId}`} style={{ textDecoration: 'none' }}>
@@ -102,54 +102,37 @@ const HomePage = () => {
                 </section>
 
                 {/* SẢN PHẨM BÁN CHẠY */}
-                {/* SẢN PHẨM BÁN CHẠY */}
                 <section style={styles.hotSection}>
                     <h2 style={{ color: 'white', textAlign: 'center', marginBottom: '25px' }}>
                         🔥 SẢN PHẨM BÁN CHẠY
                     </h2>
-
                     <div style={styles.productGrid}>
                         {products.length > 0 ? products.slice(0, 5).map(product => (
-                            <Link
-                                key={product.id}
-                                to={`/product/${product.id}`}
-                                style={{ textDecoration: 'none' }}
-                            >
+                            <Link key={product.id} to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
                                 <div style={styles.card}>
-                                    <img
-                                        src={product.imageUrl}
-                                        alt={product.name}
-                                        style={styles.img}
-                                    />
+                                    <img src={product.imageUrl} alt={product.name} style={styles.img} />
                                     <h4 style={styles.title}>{product.name}</h4>
-                                    <p style={styles.price}>
-                                        {product.price?.toLocaleString()} đ
-                                    </p>
+                                    <p style={styles.price}>{product.price?.toLocaleString()} đ</p>
                                     <button style={styles.btnBuy}>Chọn mua</button>
                                 </div>
                             </Link>
-                        )) : (
-                            <p style={{ color: 'white', textAlign: 'center', width: '100%' }}>
-                                Đang tải sản phẩm...
-                            </p>
-                        )}
+                        )) : <p style={{ color: 'white', textAlign: 'center', width: '100%' }}>Đang tải sản phẩm...</p>}
                     </div>
                 </section>
 
-
-                {/* DANH MỤC NỔI BẬT */}
+                {/* DANH MỤC NỔI BẬT: CẬP NHẬT LINK ĐỂ LỌC THEO SLUG */}
                 <div style={{ marginTop: '40px' }}>
                     <h3>Danh mục nổi bật</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: '15px' }}>
                         {categories.map(cat => (
                             <Link
                                 key={cat.id}
-                                to={`/products?category=${cat.slug}`}
+                                to={`/products?category=${cat.slug}`} // Chuyền slug lên URL để ProductPage lọc
                                 style={{ textDecoration: 'none' }}
                             >
-                                <div style={{ background: '#fff', padding: '15px', borderRadius: '12px', textAlign: 'center' }}>
-                                    <img src={cat.img} alt={cat.name} style={{ width: '60px', height: '60px' }} />
-                                    <p style={{ marginTop: '10px', color: '#333', fontWeight: '600' }}>
+                                <div style={{ background: '#fff', padding: '15px', borderRadius: '12px', textAlign: 'center', height: '100%' }}>
+                                    <img src={cat.img} alt={cat.name} style={{ width: '60px', height: '60px', objectFit: 'contain' }} />
+                                    <p style={{ marginTop: '10px', color: '#333', fontWeight: '600', fontSize: '14px' }}>
                                         {cat.name}
                                     </p>
                                 </div>
@@ -179,9 +162,7 @@ const HomePage = () => {
                                 </Link>
                             ))}
                         </div>
-                        <div style={styles.doctorWrapper}>
-                            <img src="https://nhathuoclongchau.com.vn/estore-images/home/doctor-check.png" alt="Doctor" style={styles.doctorImg} />
-                        </div>
+
                     </div>
                 </div>
 
@@ -220,6 +201,7 @@ const HomePage = () => {
 };
 
 const styles = {
+    // ... Giữ nguyên toàn bộ styles cũ của Huy ...
     fixedBannerWrapper: { width: '100%', position: 'relative', overflow: 'hidden', lineHeight: 0 },
     subBannerWrapper: { marginTop: '20px', position: 'relative', borderRadius: '15px', overflow: 'hidden', display: 'flex', alignItems: 'center', backgroundColor: '#fff' },
     subBannerImg: { width: '100%', aspectRatio: '16/5', objectFit: 'cover' },
@@ -232,7 +214,6 @@ const styles = {
     hotSection: { backgroundColor: '#1250dc', borderRadius: '20px', padding: '30px', marginTop: '40px' },
     productGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: '20px' },
     categoryGrid: { display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '15px' },
-    categoryCard: { backgroundColor: 'white', padding: '20px 10px', borderRadius: '12px', textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', border: '1px solid #f0f0f0', cursor: 'pointer' },
     card: { backgroundColor: 'white', padding: '20px', borderRadius: '15px', textAlign: 'center', position: 'relative' },
     img: { width: '100%', height: '160px', objectFit: 'contain' },
     title: { fontSize: '14px', height: '40px', margin: '15px 0', overflow: 'hidden', color: '#333' },

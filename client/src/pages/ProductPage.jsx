@@ -18,10 +18,8 @@ const CATEGORIES = [
 ];
 
 const ProductPage = () => {
-    const [allProducts, setAllProducts] = useState([]); // Lưu toàn bộ data từ server
-    const [filteredProducts, setFilteredProducts] = useState([]); // Data hiển thị sau khi nhấn Áp dụng
-
-    // State tạm thời để lưu lựa chọn của người dùng
+    const [allProducts, setAllProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [tempCategory, setTempCategory] = useState('');
     const [tempPrice, setTempPrice] = useState('');
 
@@ -29,15 +27,20 @@ const ProductPage = () => {
     const navigate = useNavigate();
     const params = new URLSearchParams(location.search);
     const searchQuery = params.get('search');
+    const categoryQuery = params.get('category'); // Lấy slug từ trang chủ truyền sang
 
-    // 1. Chỉ load toàn bộ sản phẩm 1 lần duy nhất khi vào trang
+    // 1. Load data 1 lần duy nhất
     useEffect(() => {
         const fetchAll = async () => {
             try {
                 const res = await productApi.getAll();
                 const data = res.data?._embedded ? res.data._embedded.productList : res.data;
                 setAllProducts(data);
-                setFilteredProducts(data); // Ban đầu hiện tất cả
+
+                // Nếu không có category trên URL thì hiện tất cả
+                if (!categoryQuery) {
+                    setFilteredProducts(data);
+                }
             } catch (err) {
                 console.error('Lỗi lấy sản phẩm', err);
             }
@@ -45,16 +48,31 @@ const ProductPage = () => {
         fetchAll();
     }, []);
 
-    // 2. Hàm xử lý khi bấm nút "ÁP DỤNG"
+    // 2. TỰ ĐỘNG LỌC KHI URL THAY ĐỔI (Nhấn từ trang chủ)
+    useEffect(() => {
+        if (allProducts.length > 0) {
+            if (categoryQuery) {
+                setTempCategory(categoryQuery); // Đồng bộ radio button bên sidebar
+
+                const category = CATEGORIES.find(c => c.slug === categoryQuery);
+                if (category) {
+                    const result = allProducts.filter(p => Number(p.categoryId) === Number(category.id));
+                    setFilteredProducts(result);
+                }
+            } else {
+                setFilteredProducts(allProducts);
+            }
+        }
+    }, [categoryQuery, allProducts]); // Chạy lại khi tham số URL hoặc data thay đổi
+
+    // 3. Hàm xử lý khi bấm nút "ÁP DỤNG" (Giữ nguyên logic của bạn)
     const handleApplyFilters = () => {
         let result = [...allProducts];
 
-        // Lọc theo search (nếu có)
         if (searchQuery) {
             result = result.filter(p => p.name?.toLowerCase().includes(searchQuery.toLowerCase()));
         }
 
-        // Lọc theo danh mục đã chọn tạm thời
         if (tempCategory) {
             const category = CATEGORIES.find(c => c.slug === tempCategory);
             if (category) {
@@ -62,17 +80,16 @@ const ProductPage = () => {
             }
         }
 
-        // Lọc theo khoảng giá đã chọn tạm thời
         if (tempPrice === 'under100') result = result.filter(p => p.price < 100000);
         else if (tempPrice === '100to500') result = result.filter(p => p.price >= 100000 && p.price <= 500000);
         else if (tempPrice === 'over500') result = result.filter(p => p.price > 500000);
 
-        setFilteredProducts(result); // Cập nhật danh sách hiển thị
+        setFilteredProducts(result);
     };
 
     return (
         <div style={{ display: 'flex', padding: '30px 80px', gap: '30px', background: '#f4f7fe' }}>
-            {/* SIDEBAR BỘ LỌC */}
+            {/* SIDEBAR BỘ LỌC (Giữ nguyên giao diện) */}
             <div style={styles.filterSidebar}>
                 <h3 style={styles.filterTitle}>Danh mục</h3>
                 <div style={styles.categoryList}>
@@ -117,13 +134,12 @@ const ProductPage = () => {
                     </label>
                 ))}
 
-                {/* NÚT ÁP DỤNG QUAN TRỌNG NHẤT */}
                 <button onClick={handleApplyFilters} style={styles.btnFilter}>
                     ÁP DỤNG BỘ LỌC
                 </button>
             </div>
 
-            {/* DANH SÁCH SẢN PHẨM */}
+            {/* DANH SÁCH SẢN PHẨM (Giữ nguyên giao diện) */}
             <div style={{ flex: 1 }}>
                 <div style={styles.productGrid}>
                     {filteredProducts.length === 0 ? (
@@ -151,9 +167,9 @@ const styles = {
     radioLabel: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', cursor: 'pointer', marginBottom: '5px' },
     btnFilter: { width: '100%', background: '#1250dc', color: '#fff', padding: '12px', borderRadius: '8px', border: 'none', cursor: 'pointer', marginTop: '20px', fontWeight: 'bold' },
     productGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' },
-    productCard: { background: '#fff', padding: 15, borderRadius: 12, textAlign: 'center', cursor: 'pointer', transition: '0.3s' },
+    productCard: { background: '#fff', padding: 15, borderRadius: 12, textAlign: 'center', cursor: 'pointer', transition: '0.3s', border: '1px solid transparent' },
     img: { width: '100%', height: 150, objectFit: 'contain' },
-    title: { fontSize: '13px', minHeight: '40px', margin: '10px 0' },
+    title: { fontSize: '13px', minHeight: '40px', margin: '10px 0', color: '#333' },
     price: { color: '#1250dc', fontWeight: 'bold', marginBottom: '10px' },
     btnBuy: { background: '#1250dc', color: '#fff', padding: '8px', borderRadius: '20px', border: 'none', width: '100%' }
 };

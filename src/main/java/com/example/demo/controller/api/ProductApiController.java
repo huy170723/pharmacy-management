@@ -1,81 +1,48 @@
 package com.example.demo.controller.api;
 
 import com.example.demo.dto.ProductDTO;
-import com.example.demo.entity.Product;
-import com.example.demo.repository.ProductRepository;
+import com.example.demo.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/products")
+@CrossOrigin(origins = "http://localhost:3000") // Đảm bảo React có thể gọi API
 public class ProductApiController {
 
-        private final ProductRepository productRepository;
+        private final ProductService productService;
 
-        public ProductApiController(ProductRepository productRepository) {
-                this.productRepository = productRepository;
+        public ProductApiController(ProductService productService) {
+                this.productService = productService;
         }
 
         // =======================
-        // 1️⃣ LẤY TẤT CẢ SẢN PHẨM
+        // 1️⃣ LẤY DANH SÁCH SẢN PHẨM (Cập nhật để Lọc)
         // =======================
         @GetMapping
-        public List<ProductDTO> getAll() {
-                return productRepository.findAll()
-                                .stream()
-                                .map(this::toDTO)
-                                .toList();
+        public List<ProductDTO> getAll(@RequestParam(required = false) String category) {
+                // Nếu URL có tham số ?category=slug-danh-muc
+                if (category != null && !category.isEmpty()) {
+                        return productService.getProductsByCategory(category);
+                }
+                // Mặc định trả về tất cả sản phẩm (giữ nguyên dữ liệu cũ)
+                return productService.getAllProducts();
         }
 
         // =======================
-        // 2️⃣ CHI TIẾT SẢN PHẨM
+        // 2️⃣ CHI TIẾT SẢN PHẨM (Giữ nguyên)
         // =======================
         @GetMapping("/{id}")
         public ProductDTO getOne(@PathVariable Long id) {
-                Product product = productRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
-
-                return toDTO(product);
+                return productService.getProductById(id);
         }
 
         // =======================
-        // 3️⃣ SẢN PHẨM LIÊN QUAN
+        // 3️⃣ SẢN PHẨM LIÊN QUAN (Giữ nguyên)
         // =======================
         @GetMapping("/{id}/related")
-        public List<ProductDTO> getRelatedProducts(@PathVariable Long id) {
-
-                Product currentProduct = productRepository.findById(id)
-                                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
-
-                if (currentProduct.getCategory() == null) {
-                        return List.of();
-                }
-
-                return productRepository
-                                .findByCategory_IdAndIdNot(
-                                                currentProduct.getCategory().getId(),
-                                                id)
-                                .stream()
-                                .map(this::toDTO)
-                                .toList();
+        public List<ProductDTO> getRelated(@PathVariable Long id) {
+                return productService.getRelatedProducts(id);
         }
-
-        // =======================
-        // DTO MAPPER
-        // =======================
-        private ProductDTO toDTO(Product p) {
-                return new ProductDTO(
-                                p.getId(),
-                                p.getName(),
-                                p.getPrice(),
-                                p.getImageUrl(),
-                                p.getStock(),
-                                p.getDescription(),
-                                p.getOrigin(),
-                                p.getSpecifications(),
-                                p.getCategory() != null ? p.getCategory().getId() : null,
-                                p.getCategory() != null ? p.getCategory().getName() : null);
-        }
-
 }

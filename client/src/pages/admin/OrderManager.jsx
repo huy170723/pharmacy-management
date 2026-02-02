@@ -152,7 +152,7 @@ const OrderManager = () => {
                                 <td style={styles.td}>{formatDate(order.orderDate)}</td>
                                 <td style={styles.td}>
                                     <button onClick={() => setSelectedOrder(order)} style={styles.btnView}>👁️ Xem</button>
-                                    <button onClick={() => handleDelete(order.id)} style={styles.btnDelete}>🗑️ Xóa</button>
+
                                 </td>
                             </tr>
                         ))}

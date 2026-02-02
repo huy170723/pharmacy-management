@@ -16,11 +16,13 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
+    // THÊM DÒNG NÀY: Để khớp với ProductRepository.findByCategory_Slug
+    @Column(unique = true)
+    private String slug;
+
     private String description;
 
-    // Thêm dòng này để xóa "bỏ qua ràng buộc" một cách chuyên nghiệp
-    // orphanRemoval = true sẽ xóa các sản phẩm "mồ côi" khi danh mục bị xóa
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore // Tránh lỗi vòng lặp vô hạn khi trả về JSON
+    @JsonIgnore
     private List<Product> products;
 }
